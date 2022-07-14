@@ -1,4 +1,5 @@
 import pandas as pd
+  
 # y = wx + b
 def compute_mse(b, w, points):
     totalError = 0

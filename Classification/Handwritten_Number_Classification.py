@@ -23,7 +23,7 @@ SGD_optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
 def train_epoch(epoch):
     for step, (x, y) in enumerate(train_dataset): #Build the Gradient Recording Environment
         with tf.GradientTape() as tape:
-            x=tf.reshape(x,[-1,28*28]) #flatten,[28,28] ->[1,784]
+            x=tf.reshape(x,[-1,28*28]) #flatten,[b,28,28] ->[b,784]
             output = model(x) #input x to model,get output.
             loss = tf.reduce_sum(tf.square(output - y)) / x.shape[0] # here we use 'mse'.
             grads = tape.gradient(loss, model.trainable_variables)#Find the gradient information of all parameters in the model

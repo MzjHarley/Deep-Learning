@@ -44,9 +44,8 @@ def train_epoch(train_dataset, w1, b1, w2, b2, w3, b3, lr=0.001):
             h2 = tf.nn.relu(h2)
             # [b, 128] => [b, 10]
             output = h2 @ w3 + b3
-
             loss = tf.reduce_mean(tf.square(y - output))
-            grads = tape.gradient(loss, [w1, b1, w2, b2, w3, b3])
+        grads = tape.gradient(loss, [w1, b1, w2, b2, w3, b3])
 
         # gradient update => w=w-lr * grad,  b=b-lr * grad
         w1.assign_sub(lr * grads[0])

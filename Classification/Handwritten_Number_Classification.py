@@ -26,8 +26,8 @@ def train_epoch(epoch):
             x=tf.reshape(x,[-1,28*28]) #flatten,[b,28,28] ->[b,784]
             output = model(x) #input x to model,get output.
             loss = tf.reduce_sum(tf.square(output - y)) / x.shape[0] # here we use 'mse'.
-            grads = tape.gradient(loss, model.trainable_variables)#Find the gradient information of all parameters in the model
-            SGD_optimizer.apply_gradients(zip(grads, model.trainable_variables))#update parameters
+        grads = tape.gradient(loss, model.trainable_variables)#Find the gradient information of all parameters in the model
+        SGD_optimizer.apply_gradients(zip(grads, model.trainable_variables))#update parameters
     return loss
 
 def train():

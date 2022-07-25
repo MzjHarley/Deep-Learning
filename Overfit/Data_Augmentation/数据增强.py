@@ -5,7 +5,7 @@ import numpy as np
 png = tf.io.read_file("lenna.png")
 png = tf.image.decode_png(png, channels=3)
 print(png.dtype)
-pl=plt.figure(figsize=(24,6)) #创建一块画布
+pl=plt.figure(figsize=(24,6))
 
 png1=tf.image.resize(png,[244,244])
 print(png1.dtype)

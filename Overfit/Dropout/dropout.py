@@ -20,7 +20,7 @@ def get_data():
 
 def train(x,y,train_db,val_db,test_db):
     model=tf.keras.Sequential([tf.keras.layers.Dense(256,activation='relu'),
-                               tf.keras.layers.Dropout(0.5),  # 0.5 rate to drop，，the dropout has no parameters.
+                               tf.keras.layers.Dropout(0.5),  # 0.5 rate to drop，the dropout has no parameters.
                                tf.keras.layers.Dense(128,activation='relu'),
                                tf.keras.layers.Dropout(0.5),  # 0.5 rate to drop
                                tf.keras.layers.Dense(64,activation='relu'),

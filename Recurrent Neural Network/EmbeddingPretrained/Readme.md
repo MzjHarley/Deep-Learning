@@ -1,0 +1,2 @@
+在情感分类任务时，Embedding 层是从零开始训练的。实际上，对于文本处理任务来说，领域知识大部分是共享的，因此我们能够利用在其它任务上训练好的词向量来初始化Embedding 层，完成领域知识迁移。基于预训练的 Embedding 层开始训练，少量样本时也能取得不错的效果。  
+预训练 GloVe 词向量下载：https://www.kaggle.com/datasets/danielwillgeorge/glove6b100dtxt

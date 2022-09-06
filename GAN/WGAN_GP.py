@@ -141,8 +141,8 @@ def train():
     discriminator.build(input_shape=(4, 64, 64, 3))
     discriminator.summary()
 
-    g_optimizer = tf.keras.optimizers.Adam(learning_rate=0.0002, beta_1=0.5)
-    d_optimizer = tf.keras.optimizers.Adam(learning_rate=0.0002, beta_1=0.5)
+    g_optimizer = tf.keras.optimizers.Adam(learning_rate=0.0005, beta_1=0.5)
+    d_optimizer = tf.keras.optimizers.Adam(learning_rate=0.0005, beta_1=0.5)
 
     d_losses, g_losses = [], []
 

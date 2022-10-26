@@ -13,3 +13,4 @@
 |10.|Recurrent Neural Network|
 |11.|Auto-Encoder|
 |12.|GAN|
+|13.|transformer|

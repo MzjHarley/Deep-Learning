@@ -5,6 +5,11 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 
 
+def get_seq_mask(seq):
+    seq_mask = (1 - torch.triu(torch.ones(1, seq.shape[1], seq.shape[1]), diagonal=1))
+    return seq_mask
+
+
 # --------------------------------实现单词编码-------------------------------------------------------
 ## 实现单词原始编码
 class Embeddings(nn.Module):
@@ -19,7 +24,7 @@ class Embeddings(nn.Module):
 
 ## 实现单词的位置编码
 class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, dropout=0.1, max_len=5000):
+    def __init__(self, d_model, dropout=0.1, max_len=200):
         super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
         PE = torch.zeros(max_len, d_model)  # [max_len,d_model]
@@ -35,7 +40,6 @@ class PositionalEncoding(nn.Module):
         x = x + Variable(self.PE[:, :x.size(1), :], requires_grad=False)
         return self.dropout(x)
 
-
 '''
 d_model = 512
 vocab = 1000
@@ -50,21 +54,22 @@ pe_result = pe(embr)
 print(pe_result)  # [2,4,512]
 '''
 
-
 # -------------------------------实现多头注意力机制--------------------------------------------
 class ScaledDotProductAttention(nn.Module):
-    def __init__(self, d_model, attn_dropout=0.1):
+    def __init__(self, d_model, attn_dropout=0):
         super(ScaledDotProductAttention, self).__init__()
         self.d_model = d_model
         self.dropout = nn.Dropout(p=attn_dropout)
 
     def forward(self, q, k, v, mask=None):
-        attn = torch.matmul(q / math.sqrt(self.d_model), k.transpose(2, 3))  # 每一层的时间复杂度为O(n^2)
+        attn = torch.matmul(q / math.sqrt(self.d_model), k.transpose(2, 3))  # O(d * n^2)
+
         if mask is not None:
-            attn = attn.masked_fill(mask == 0, -1e9)
-        attn = self.dropout(F.softmax(attn, dim=-1))
-        output = torch.matmul(attn, v)
-        return output, attn
+            attn = attn.masked_fill(mask == 0, -1e6)
+        # print(attn)
+        attn = self.dropout(F.softmax(attn, dim=-1))  # O(n^2)
+        output = torch.matmul(attn, v)  # O(d * n^2)
+        return output, attn  # 总时间复杂度O(d * n^2)
 
 
 class MultiHeadAttention(nn.Module):
@@ -109,12 +114,13 @@ class MultiHeadAttention(nn.Module):
 
 '''
 n_head = 8
+sd = ScaledDotProductAttention(512)
+mask = get_seq_mask(pe_result)
+print(mask)
 multihead = MultiHeadAttention(n_head, d_model, d_model, d_model)
-output, attn = multihead(pe_result, pe_result, pe_result)
+output, attn = multihead(pe_result, pe_result, pe_result,mask=mask)
 print(output)
 print(output.shape)
-print(attn)
-print(attn.shape)
 '''
 
 
@@ -277,20 +283,21 @@ class transformer(nn.Module):
         if trg_emb_pri_weight_sharing:  # share the weight between encoder_embeddings and the last dense.
             self.trg_word_prj.weight = self.Decoder.trg_word_emb.embedding.weight
 
-    def forward(self, src_seq, trg_seq):
-        enc_out = self.Encoder(src_seq)
-        dec_out = self.Decoder(trg_seq, enc_out)
+    def forward(self, src_seq, trg_seq,src_seq_mask=None,trg_seq_mask = None):
+        enc_out = self.Encoder(src_seq,src_seq_mask)
+        dec_out = self.Decoder(trg_seq, enc_out,src_seq_mask,trg_seq_mask)
         seq_logit = self.trg_word_prj(dec_out)
         seq_logit /= math.sqrt(self.d_model)
         seq_logit = seq_logit.view(-1, seq_logit.size(2))
 
         return F.softmax(seq_logit, dim=-1)
 
-
 '''
 transformer = transformer(10,8,512,4*512,8,512,512)
+print(transformer)
 out = transformer(x,x)
 print(out)
 print(torch.argmax(out,dim=-1))
 print(out.shape)
 '''
+

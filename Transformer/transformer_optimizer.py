@@ -1,9 +1,9 @@
 
 class ScheduleOptim():
-    def __init__(self, optimizer, lr_mul, d_model, n_warm_steps):
+    def __init__(self, optimizer, lr, d_model, n_warm_steps):
         self._optimizer = optimizer
         self.d_model = d_model
-        self.lr_mul = lr_mul
+        self.lr_mul = lr
         self.n_warm_steps = n_warm_steps
         self.n_steps = 0
 

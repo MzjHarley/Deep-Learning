@@ -290,7 +290,7 @@ class transformer(nn.Module):
         seq_logit /= math.sqrt(self.d_model)
         seq_logit = seq_logit.view(-1, seq_logit.size(2))
 
-        return F.softmax(seq_logit, dim=-1)
+        return F.log_softmax(seq_logit, dim=-1)
 
 '''
 transformer = transformer(10,8,512,4*512,8,512,512)

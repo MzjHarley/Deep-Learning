@@ -68,8 +68,8 @@ def eval_epoch(model, validation_data, smoothing=False):
             n_word_correct += n_correct
             total_loss += loss.item()
 
-    loss = total_loss / n_word_total
-    accuracy = n_word_correct / n_word_total
+    loss = total_loss * 1.0 / n_word_total
+    accuracy = n_word_correct * 1.0 / n_word_total
     print("word_total:", n_word_total, ", correct_word:", n_word_correct)
     return loss, accuracy
 

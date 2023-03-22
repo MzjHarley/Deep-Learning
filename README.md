@@ -14,3 +14,4 @@
 |11.|Auto-Encoder|
 |12.|GAN|
 |13.|transformer|
+|14.|Reinforcement Learning|
